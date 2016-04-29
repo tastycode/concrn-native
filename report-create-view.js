@@ -11,13 +11,15 @@ import React, {
   TouchableHighlight
 } from 'react-native';
 
+import {Ripple, COLOR} from 'react-native-material-design';
+
 import Camera from 'react-native-camera';
 import ModalPicker from 'react-native-modal-picker';
 
 const urgencyValues = [
   {id: 0, label: 'Not urgent'},
   {id: 4, label: 'Within an hour'},
-  {id: 5, label: 'Need help now'}
+  {id: 5, label: 'Now'}
 ];
 const genderValues = ['Male', 'Female', 'Other'];
 const ageValues = ['Youth (0-17)', 'Young Adult (18-34)', 'Adult (35-64)', 'Senior (65+)'];
@@ -67,16 +69,24 @@ export default class ReportCreateView extends Component {
         <Text style={styles.sectionLabel}>Urgency</Text>
         <View style={styles.buttonSelects}>
           {urgencyValues.map((urgencyHash) => {
-             return <TouchableHighlight key={urgencyHash.id} style={styles.buttonSelect}><Text>{urgencyHash.label}</Text></TouchableHighlight>;
+             return <Ripple>
+                      <TouchableHighlight
+                        key={urgencyHash.id}
+                        style={styles.buttonSelect}><Text style={styles.buttonSelectText}>{urgencyHash.label.toUpperCase()}</Text>
+                      </TouchableHighlight>
+                    </Ripple>;
+
           })}
         </View>
 
         <Text style={styles.sectionLabel}>Gender</Text>
         <View style={styles.buttonSelects}>
           {genderValues.map((genderValue) => {
-             return <TouchableHighlight key={genderValue} style={styles.buttonSelect}>
-                      <Text>{genderValue}</Text>
-                    </TouchableHighlight>;
+             return <Ripple>
+                     <TouchableHighlight key={genderValue} style={styles.buttonSelect}>
+                        <Text style={styles.buttonSelectText}>{genderValue.toUpperCase()}</Text>
+                      </TouchableHighlight>
+                    </Ripple>;
           })}
         </View>
         <View style={styles.labelWithInput}>
@@ -91,6 +101,7 @@ export default class ReportCreateView extends Component {
         <View style={styles.labelWithInput}>
           <Text style={styles.label}>Ethnicity</Text>
                 <ModalPicker
+                    selectStyle={styles.select}
                     data={raceValues.map((raceValue) => {
                       return {key: raceValue, label: raceValue}
                     })}
@@ -140,17 +151,32 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 40
   },
+  select: {
+    borderRadius: 0,
+  },
   sectionLabel: {
     backgroundColor: '#eee',
     padding: 10,
     alignItems: 'flex-end'
   },
   buttonSelects: {
-    padding: 10
+    flexDirection: 'row',
+    padding: 10,
   },
   buttonSelect: {
-    padding: 5,
-    backgroundColor: '#f0f'
+    shadowColor: '#212121',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 2, height: 2},
+    shadowRadius: 3,
+    backgroundColor: COLOR['paperPink500'].color,
+    flex: 1,
+    padding: 10,
+    margin: 5,
+    elevation: 1,
+  },
+  buttonSelectText: {
+    color: '#fff',
+    textAlign: 'center'
   },
   reportFields: {
     flex: 4
