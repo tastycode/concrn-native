@@ -1,0 +1,17 @@
+{
+  "name": "Concrn3",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "dependencies": {
+    "react": "^0.14.8",
+    "react-native": "^0.24.1",
+    "react-native-camera": "github:lwansbrough/react-native-camera",
+    "react-native-dropdown": "0.0.6",
+    "react-native-maps": "^0.3.2",
+    "react-native-modal-picker": "0.0.14",
+    "react-native-selectme": "^1.0.0"
+  }
+}
