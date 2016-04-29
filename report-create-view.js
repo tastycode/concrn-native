@@ -8,7 +8,8 @@ import React, {
   Navigator,
   MapView,
   Dimensions,
-  TouchableHighlight
+  TouchableHighlight,
+  TextInput
 } from 'react-native';
 
 import {Ripple, COLOR} from 'react-native-material-design';
@@ -69,9 +70,8 @@ export default class ReportCreateView extends Component {
         <Text style={styles.sectionLabel}>Urgency</Text>
         <View style={styles.buttonSelects}>
           {urgencyValues.map((urgencyHash) => {
-             return <Ripple>
+             return <Ripple key={urgencyHash.id}>
                       <TouchableHighlight
-                        key={urgencyHash.id}
                         style={styles.buttonSelect}><Text style={styles.buttonSelectText}>{urgencyHash.label.toUpperCase()}</Text>
                       </TouchableHighlight>
                     </Ripple>;
@@ -82,7 +82,7 @@ export default class ReportCreateView extends Component {
         <Text style={styles.sectionLabel}>Gender</Text>
         <View style={styles.buttonSelects}>
           {genderValues.map((genderValue) => {
-             return <Ripple>
+             return <Ripple key={genderValue}>
                      <TouchableHighlight key={genderValue} style={styles.buttonSelect}>
                         <Text style={styles.buttonSelectText}>{genderValue.toUpperCase()}</Text>
                       </TouchableHighlight>
@@ -92,22 +92,40 @@ export default class ReportCreateView extends Component {
         <View style={styles.labelWithInput}>
           <Text style={styles.label}>Age</Text>
                 <ModalPicker
+                    selectStyle={styles.modalPickerSelect}
+                    optionTextStyle={styles.modalPickerOptionText}
+                    cancelStyle={styles.modalPickerCancel}
+                    overlayStyle={styles.modalPickerOverlay}
+                    cancelText="CANCEL"
                     data={ageValues.map((ageValue) => {
                       return {key: ageValue, label: ageValue}
                     })}
-                    initValue="Choose..."
+                    initValue="CHOOSE ❯"
                     onChange={(option)=>{ this.setState({age: option})}}/>
         </View>
         <View style={styles.labelWithInput}>
           <Text style={styles.label}>Ethnicity</Text>
                 <ModalPicker
-                    selectStyle={styles.select}
+                    selectStyle={styles.modalPickerSelect}
+                    optionTextStyle={styles.modalPickerOptionText}
+                    cancelStyle={styles.modalPickerCancel}
+                    overlayStyle={styles.modalPickerOverlay}
+                    cancelText="CANCEL"
                     data={raceValues.map((raceValue) => {
                       return {key: raceValue, label: raceValue}
                     })}
-                    initValue="Choose..."
+                    initValue="CHOOSE ❯"
                     onChange={(option)=>{ this.setState({race: option})}}/>
         </View>
+        <Text style={styles.sectionLabel}>Notes</Text>
+        <TextInput
+            style={styles.textarea}
+            multiline={true}
+            onChangeText={(text) => this.setState({nature: text})}
+            value={this.state.nature}
+          />
+
+
        </View>;
   }
 
@@ -180,6 +198,30 @@ const styles = StyleSheet.create({
   },
   reportFields: {
     flex: 4
+  },
+  labelWithInput: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10
+  },
+  label: {
+  },
+  modalPickerSelect: {
+    borderWidth: 0
+  },
+  modalPickerOptionText: {
+    textAlign: 'left'
+  },
+  modalPickerCancel: {
+    borderRadius: 0
+  },
+  modalPickerOverlay: {
+    borderRadius: 0
+  },
+  textarea: {
+    height: 80,
+    padding: 10
   },
   container: {
     flexDirection: 'column',
