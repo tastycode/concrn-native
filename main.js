@@ -63,6 +63,7 @@ export default class Main extends Component {
 
   _onReportEntryFinishedFn(navigator) {
     return (reportData) => {
+      alert(JSON.stringify(reportData));
       navigator.pop();
     }
   }

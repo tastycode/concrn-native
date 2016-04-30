@@ -72,7 +72,9 @@ export default class ReportCreateView extends Component {
           {urgencyValues.map((urgencyHash) => {
              return <Ripple key={urgencyHash.id}>
                       <TouchableHighlight
-                        style={styles.buttonSelect}><Text style={styles.buttonSelectText}>{urgencyHash.label.toUpperCase()}</Text>
+                        onPress={this._onUrgencyTouchedFn(urgencyHash).bind(this)}
+                        style={this._styleForSelectedButtonWithTest( () => urgencyHash.id === this.state.urgency )}>
+                          <Text style={styles.buttonSelectText}>{urgencyHash.label.toUpperCase()}</Text>
                       </TouchableHighlight>
                     </Ripple>;
 
@@ -83,7 +85,10 @@ export default class ReportCreateView extends Component {
         <View style={styles.buttonSelects}>
           {genderValues.map((genderValue) => {
              return <Ripple key={genderValue}>
-                     <TouchableHighlight key={genderValue} style={styles.buttonSelect}>
+                     <TouchableHighlight
+                       onPress={this._onGenderTouchedFn(genderValue).bind(this)}
+                       key={genderValue}
+                       style={this._styleForSelectedButtonWithTest( () => genderValue === this.state.gender )}>
                         <Text style={styles.buttonSelectText}>{genderValue.toUpperCase()}</Text>
                       </TouchableHighlight>
                     </Ripple>;
@@ -101,7 +106,7 @@ export default class ReportCreateView extends Component {
                       return {key: ageValue, label: ageValue}
                     })}
                     initValue="CHOOSE ❯"
-                    onChange={(option)=>{ this.setState({age: option})}}/>
+                    onChange={({key: age})=>{ this.setState({age})}}/>
         </View>
         <View style={styles.labelWithInput}>
           <Text style={styles.label}>Ethnicity</Text>
@@ -115,7 +120,7 @@ export default class ReportCreateView extends Component {
                       return {key: raceValue, label: raceValue}
                     })}
                     initValue="CHOOSE ❯"
-                    onChange={(option)=>{ this.setState({race: option})}}/>
+                    onChange={({key: race})=>{ this.setState({race})}}/>
         </View>
         <Text style={styles.sectionLabel}>Notes</Text>
         <TextInput
@@ -129,10 +134,20 @@ export default class ReportCreateView extends Component {
        </View>;
   }
 
+  _styleForSelectedButtonWithTest(fn) {
+    if (fn()) {
+      return {...buttonSelectStyle, backgroundColor: COLOR['paperDeepPurple500'].color};
+    } else {
+      return styles.buttonSelect;
+    }
+  }
+
   _onCameraPressed() {
     if (this.state._cameraExpanded) {
       this.camera.capture()
-        .then((data) => alert(data));
+        .then((data) => {
+          this.setState({photo: data, _cameraExpanded: false});
+        });
     } else {
       this._toggleReportFieldsVisible();
     }
@@ -145,7 +160,32 @@ export default class ReportCreateView extends Component {
   _onReportButtonPressed() {
      this.props.onReportReady(this.state);
   }
+
+  _onUrgencyTouchedFn(urgencyHash) {
+    return () => {
+      this.setState({urgency: urgencyHash.id});
+    }
+  }
+
+  _onGenderTouchedFn(genderValue) {
+    return () => {
+      this.setState({gender: genderValue});
+   };
+  }
 }
+
+const buttonSelectStyle = {
+    shadowColor: '#212121',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 2, height: 2},
+    shadowRadius: 3,
+    backgroundColor: COLOR['paperPink500'].color,
+    flex: 1,
+    padding: 10,
+    margin: 5,
+    elevation: 1
+}
+
 const styles = StyleSheet.create({
   button: {
    backgroundColor: '#eb1487',
@@ -181,17 +221,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
   },
-  buttonSelect: {
-    shadowColor: '#212121',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 2, height: 2},
-    shadowRadius: 3,
-    backgroundColor: COLOR['paperPink500'].color,
-    flex: 1,
-    padding: 10,
-    margin: 5,
-    elevation: 1,
-  },
+  buttonSelect: buttonSelectStyle,
   buttonSelectText: {
     color: '#fff',
     textAlign: 'center'
