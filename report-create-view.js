@@ -2,6 +2,7 @@ import React, {
   AppRegistry,
   Component,
   StyleSheet,
+  Modal,
   Text,
   Picker,
   View,

@@ -9,15 +9,18 @@ import React, {
 } from 'react-native';
 
 import MapView from 'react-native-maps';
+import LoginView from './login-view';
 
 export default class ReportMapView extends Component {
   state = {
     isFirstLoad: true,
     mapRegion: undefined,
+    showLogin: true
   };
 
   render() {
     return <View style={styles.container}>
+      {this.state.showLogin && <LoginView onContinue={this._onLoginContinue.bind(this)}/>}
       <MapView
         style={styles.map}
         onRegionChange={this._onRegionChange.bind(this)}
@@ -60,7 +63,12 @@ export default class ReportMapView extends Component {
     }
   }
 
+  _onLoginContinue() {
+    this.setState({showLogin: false});
+  }
+
   _onReportButtonPressed() {
+    alert(Navigator.push);
      this.props.onLocationReady(this.state.mapRegion);
   }
 }
