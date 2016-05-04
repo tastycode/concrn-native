@@ -5,7 +5,8 @@ import React, {
   Text,
   View,
   Navigator,
-  TouchableHighlight
+  TouchableHighlight,
+  Settings
 } from 'react-native';
 
 import ReportMapView from './report-map-view';
@@ -38,6 +39,10 @@ var NavigationBarRouteMapper = {
 }
 
 export default class Main extends Component {
+  state = {
+    report: {}
+  }
+
   renderScene(route, navigator) {
      if(route.name == 'Map') {
         return <ReportMapView onLocationReady={this._onLocationReadyFn(navigator).bind(this)}></ReportMapView>
@@ -63,17 +68,45 @@ export default class Main extends Component {
 
   _onReportEntryFinishedFn(navigator) {
     return (reportData) => {
-      alert(JSON.stringify(reportData));
+      let initialReportParams = {
+        ...this.state.report,
+        address: '4545 W Evergreen',
+        name: Settings.get('name'),
+        phone: Settings.get('phone')
+      };
+      console.log(initialReportParams);
+      fetch( 'http://localhost:3000/reports.js',{
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({report: initialReportParams})
+      }).then((response) => {
+        return response.json();
+      }).then(createdReport => {
+        return fetch(`http://localhost:3000/reports/${createdReport.id}/upload.js`, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          body: JSON.stringify({report: reportData})
+        });
+      }).then(updatedReport => {
+        alert('Your report has been made. You will receive a text when a responder is on the way.');
+      });
       navigator.pop();
     }
   }
 
   _onLocationReadyFn(navigator) {
     return (mapRegion) => {
-       navigator.push({
-         ...this.routes.report,
-         ...mapRegion
-       });
+       this.setState({
+         report: {
+           lat: mapRegion.latitude,
+           long: mapRegion.longitude
+         }
+        });
+       navigator.push(this.routes.report);
     }
   }
 

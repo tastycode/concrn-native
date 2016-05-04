@@ -46,7 +46,7 @@ export default class ReportCreateView extends Component {
           ref={(cam) => {
             this.camera = cam;
           }}
-          captureTarget={Camera.constants.CaptureTarget.disk}
+          captureTarget={Camera.constants.CaptureTarget.memory}
           style={styles.preview}
           aspect={Camera.constants.Aspect.fill}>
           {this.state._cameraExpanded && (() => {
